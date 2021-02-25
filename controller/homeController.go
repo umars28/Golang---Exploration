@@ -14,7 +14,13 @@ func HomeController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	template, err := template.ParseFiles(path.Join("views", "home.html"), path.Join("views/template", "main.html"), path.Join("views/template", "header.html"), path.Join("views/template", "sidebar.html"), path.Join("views/template", "footer.html"))
+	template, err := template.ParseFiles(
+		path.Join("views", "home.html"),
+		path.Join("views/template", "main.html"),
+		path.Join("views/template", "header.html"),
+		path.Join("views/template", "sidebar.html"),
+		path.Join("views/template", "footer.html"),
+	)
 	if err != nil {
 		log.Println(err)
 		http.Error(w, "error is happening, keep calm", http.StatusInternalServerError)

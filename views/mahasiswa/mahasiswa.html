@@ -1,0 +1,48 @@
+{{ template "layout" . }}
+{{ define "main" }}
+<div class="main-content">
+    <section class="section">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h4>Mahasiswa</h4>
+              <div class="card-header-action">
+                <a href="/tambah" class="btn btn-danger">Tambah <i class="fas fa-chevron-right"></i></a>
+              </div>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive table-invoice">
+                <table class="table table-striped">
+                  <tr>
+                    <th>ID</th>
+                    <th>NIM</th>
+                    <th>Name</th>
+                    <th>Semester</th>
+                    <th>Dibuat Tanggal</th>
+                    <th>Diupdate Tanggal</th>
+                    <th>Aksi</th>
+                  </tr>
+                  {{ range .}}
+                  <tr>
+                    <td><a href="#">{{ .ID }}</a></td>
+                    <td class="font-weight-600"><a href="/detail?id={{ .ID }}">{{ .NIM }}</a></td>
+                    <td><div class="badge badge-warning">{{ .Name }}</div></td>
+                    <td>{{ .Semester }}</td>
+                    <td>{{ .CreatedAt }}</td>
+                    <td>{{ .UpdatedAt }}</td>
+                    <td>
+                      <a href="/edit?id={{ .ID }}" class="btn btn-primary btn-sm mb-2">Edit</a>
+                      <a href="/delete?id={{ .ID }}" class="btn btn-primary btn-sm mb-2">Hapus</a>
+                    </td>
+                  </tr>
+                  {{ end }}
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+{{ end }}
