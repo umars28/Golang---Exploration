@@ -16,6 +16,10 @@ func main() {
 	mux.HandleFunc("/detail", controller.DetailController)
 	mux.HandleFunc("/edit", controller.EditController)
 	mux.HandleFunc("/update", controller.UpdateController)
+	mux.HandleFunc("/register", controller.Register)
+	mux.HandleFunc("/store/register", controller.StoreRegister)
+	mux.HandleFunc("/login", controller.Login)
+	mux.HandleFunc("/login/proses", controller.LoginProses)
 
 	// mux.HandleFunc("/", controller.HomeController)
 
