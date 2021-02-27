@@ -1,7 +1,6 @@
 package controller
 
 func ErrorController(w string) {
-	sas
 	// template, err := template.ParseFiles(
 	// 	path.Join("views/error", "main.html"),
 	// 	path.Join("views/error", "404.html"),
