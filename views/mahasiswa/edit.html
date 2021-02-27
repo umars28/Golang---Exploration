@@ -9,12 +9,21 @@
               <h4>Mahasiswa</h4>
             </div>
             <div class="card-body p-0">
-                <div class="card">
-                    {{ range .}}
-                  <form method="POST" action="/update?id={{ .ID }}">
+                <div class="row">
+                  <div class="col-md-6">
                     <div class="card-header">
                       <h4>Detail Mahasiswa</h4>
                     </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="text-right mr-4 mt-4">
+                      <a href="/mahasiswa"><button class="btn btn-danger">Kembali</button></a>
+                    </div>
+                  </div>
+              </div>
+                <div class="card">
+                    {{ range .}}
+                  <form method="POST" action="/update?id={{ .ID }}">                  
                     <div class="card-body">
                       <div class="form-group">
                         <label>ID</label>

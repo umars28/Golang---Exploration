@@ -6,13 +6,10 @@ import (
 	"fmt"
 	"html/template"
 	"log"
-	"mygo/config"
-	"mygo/model"
 	"mygo/query"
 	"net/http"
 	"path"
 	"strconv"
-	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -99,25 +96,11 @@ func StoreController(w http.ResponseWriter, r *http.Request) {
 	nim := r.Form.Get("nim")
 	name := r.Form.Get("name")
 	semester := r.Form.Get("semester")
-	db, e := config.MySQL()
-
-	if e != nil {
-		log.Fatal("Can't connect to mysql", e)
-	}
-
-	eb := db.Ping()
-	if eb != nil {
-		panic(eb.Error())
-	}
-
-	_, error := db.Query(`INSERT INTO mahasiswa (nim, name, semester, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`, nim, name, semester, time.Now(), time.Now())
-
-	// if there is an error inserting, handle it
-	if error != nil {
-		panic(error.Error())
-	}
+	query.CreateRow(name, nim, semester)
 	fmt.Println("success")
-	w.Write([]byte("Sukses Tambah Data"))
+	http.Redirect(w, r, "/mahasiswa", 302)
+	w.Write([]byte("<script>alert('Sukses menambahkan data')</script>"))
+	return
 }
 
 func DeleteController(w http.ResponseWriter, r *http.Request) {
@@ -127,24 +110,11 @@ func DeleteController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	mhs, _ := strconv.Atoi(id)
-
-	db, err := config.MySQL()
-
-	if err != nil {
-		log.Fatal("Can't connect to MySQL", err)
-	}
-
-	queryText := fmt.Sprintf("DELETE FROM %v where id = '%d'", "mahasiswa", mhs)
-	_, error := db.Query(queryText)
-	if error != nil {
-		fmt.Println("failed")
-	}
-
-	if err != nil && err != sql.ErrNoRows {
-		fmt.Println("gagal")
-	}
-	w.Write([]byte("Sukses Hapus Data"))
+	query.Delete(mhs)
 	fmt.Println("sukses hapus data")
+	http.Redirect(w, r, "/mahasiswa", 302)
+	w.Write([]byte("<script>alert('Sukses menghapus data')</script>"))
+	return
 }
 
 const (
@@ -155,57 +125,14 @@ const (
 func DetailController(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		id := r.URL.Query().Get("id")
+		ctx, cancel := context.WithCancel(context.Background())
+		defer cancel()
 		mhs, _ := strconv.Atoi(id)
-		//ctx, cancel := context.WithCancel(context.Background())
-
-		//defer cancel()
-		//mahasiswas, err := query.GetAll(ctx)
-		var mahasiswas []model.Mahasiswa
-		db, e := config.MySQL()
-
-		if e != nil {
-			log.Fatal("Can't connect to mysql", e)
-		}
-
-		eb := db.Ping()
-		if eb != nil {
-			panic(eb.Error())
-		}
-
-		//queryText := fmt.Sprintf("SELECT * FROM %v where id %d Order By id DESC", table, mhs)
-		rowQuery, err := db.Query("SELECT * FROM mahasiswa where id = ?", mhs)
-
-		//rowQuery, err := db.QueryContext(ctx, queryText)
+		mahasiswas, err := query.Detail(ctx, mhs)
 		if err != nil {
-			log.Fatal(err)
-		}
-		for rowQuery.Next() {
-			var mahasiswa model.Mahasiswa
-			var created_at, updated_at string
-
-			if err = rowQuery.Scan(&mahasiswa.ID,
-				&mahasiswa.NIM,
-				&mahasiswa.Name,
-				&mahasiswa.Semester,
-				&created_at,
-				&updated_at); err != nil {
-			}
-
-			// format string ke datetime
-			mahasiswa.CreatedAt, err = time.Parse(layoutDateTime, created_at)
-			if err != nil {
-				log.Fatal(err)
-			}
-			mahasiswa.UpdatedAt, err = time.Parse(layoutDateTime, updated_at)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			mahasiswas = append(mahasiswas, mahasiswa)
-		}
-
-		if err != nil {
-			fmt.Println(err)
+			log.Println(err)
+			http.Error(w, "error is happening, keep calm", http.StatusInternalServerError)
+			return
 		}
 		template, err := template.ParseFiles(
 			path.Join("views/mahasiswa", "detail.html"),
@@ -237,57 +164,10 @@ func EditController(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		id := r.URL.Query().Get("id")
 		mhs, _ := strconv.Atoi(id)
-		//ctx, cancel := context.WithCancel(context.Background())
+		ctx, cancel := context.WithCancel(context.Background())
 
-		//defer cancel()
-		//mahasiswas, err := query.GetAll(ctx)
-		var mahasiswas []model.Mahasiswa
-		db, e := config.MySQL()
-
-		if e != nil {
-			log.Fatal("Can't connect to mysql", e)
-		}
-
-		eb := db.Ping()
-		if eb != nil {
-			panic(eb.Error())
-		}
-
-		//queryText := fmt.Sprintf("SELECT * FROM %v where id %d Order By id DESC", table, mhs)
-		rowQuery, err := db.Query("SELECT * FROM mahasiswa where id = ?", mhs)
-
-		//rowQuery, err := db.QueryContext(ctx, queryText)
-		if err != nil {
-			log.Fatal(err)
-		}
-		for rowQuery.Next() {
-			var mahasiswa model.Mahasiswa
-			var created_at, updated_at string
-
-			if err = rowQuery.Scan(&mahasiswa.ID,
-				&mahasiswa.NIM,
-				&mahasiswa.Name,
-				&mahasiswa.Semester,
-				&created_at,
-				&updated_at); err != nil {
-			}
-
-			// format string ke datetime
-			mahasiswa.CreatedAt, err = time.Parse(layoutDateTime, created_at)
-			if err != nil {
-				log.Fatal(err)
-			}
-			mahasiswa.UpdatedAt, err = time.Parse(layoutDateTime, updated_at)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			mahasiswas = append(mahasiswas, mahasiswa)
-		}
-
-		if err != nil {
-			fmt.Println(err)
-		}
+		defer cancel()
+		mahasiswas, err := query.Edit(ctx, mhs)
 		template, err := template.ParseFiles(
 			path.Join("views/mahasiswa", "edit.html"),
 			path.Join("views/template", "main.html"),
@@ -331,21 +211,9 @@ func UpdateController(w http.ResponseWriter, r *http.Request) {
 	nim := r.Form.Get("nim")
 	name := r.Form.Get("name")
 	semester := r.Form.Get("semester")
-	db, e := config.MySQL()
-
-	if e != nil {
-		log.Fatal("Can't connect to mysql", e)
-	}
-
-	eb := db.Ping()
-	if eb != nil {
-		panic(eb.Error())
-	}
-
-	_, error := db.Query(`UPDATE mahasiswa SET nim = ?, name = ?, semester = ?, created_at = ?, updated_at = ? where id = ?`, nim, name, semester, time.Now(), time.Now(), id)
-	if error != nil {
-		panic(error.Error())
-	}
+	query.Update(id, nim, name, semester)
 	fmt.Println("success")
-	w.Write([]byte("Sukses Update Data"))
+	http.Redirect(w, r, "/mahasiswa", 302)
+	w.Write([]byte("<script>alert('Sukses mengubah data')</script>"))
+	return
 }

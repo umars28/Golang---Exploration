@@ -29,7 +29,7 @@ func main() {
 	mux.Handle("/static/js/", http.StripPrefix("/static/js", fileServerJs))
 	mux.Handle("/static/plugins/js/", http.StripPrefix("/static/plugins/js", fileServerJsPlugins))
 
-	log.Println("Starting web on port 8080")
+	log.Println("Starting web on port " + port)
 
 	err := http.ListenAndServe(port, mux)
 	log.Fatal(err)
