@@ -99,11 +99,14 @@ func LoginProses(w http.ResponseWriter, r *http.Request) {
 		}
 		password := r.Form.Get("password")
 		email := r.Form.Get("email")
-		query.Login(email, password)
-		fmt.Println("success")
-		http.Redirect(w, r, "/mahasiswa", 302)
-		w.Write([]byte("<script>alert('Sukses menambahkan data')</script>"))
+		success := query.Login(email, password)
+		if success {
+			fmt.Println("login berhasil")
+			http.Redirect(w, r, "/mahasiswa", 302)
+		} else {
+			fmt.Println("login gagal")
+			http.Redirect(w, r, "/login", 302)
+		}
 		return
-
 	}
 }

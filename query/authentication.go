@@ -12,26 +12,6 @@ import (
 
 var db *sql.DB
 
-func QueryUser(email string) model.User {
-	var users = model.User{}
-	db.QueryRow(`
-		SELECT id, 
-		nama, 
-		nim, 
-		email, 
-		password 
-		FROM users WHERE email=?
-		`, email).
-		Scan(
-			&users.ID,
-			&users.Nama,
-			&users.Nim,
-			&users.Email,
-			&users.Password,
-		)
-	return users
-}
-
 func Register(name, nim, email, pass string) {
 	db, e := config.MySQL()
 
@@ -53,7 +33,7 @@ func Register(name, nim, email, pass string) {
 	fmt.Println("success")
 }
 
-func Login(email, password string) {
+func Login(email, password string) bool {
 	db, e := config.MySQL()
 
 	if e != nil {
@@ -64,27 +44,21 @@ func Login(email, password string) {
 	if eb != nil {
 		panic(eb.Error())
 	}
-	users := QueryUser(email)
-	//deskripsi dan compare password
-	// var password_tes = bcrypt.CompareHashAndPassword([]byte(users.Password), []byte(password)
-
-	// if password_tes == nil {
-	// 	//login success
-	// 	fmt.Println("sukses login bree")
-	// } else {
-	// 	//login failed
-	// 	fmt.Println("gagal login bro")
-	// }
-	CheckPasswordHash(users.Password, password)
-	fmt.Println("success")
+	//users := QueryUser(email)
+	var tag model.User
+	var isSuccess bool
+	// Execute the query
+	db.QueryRow("SELECT * FROM users where email = ?", email).Scan(&tag.ID, &tag.Nama, &tag.Nim, &tag.Email, &tag.Password)
+	var password_tes = bcrypt.CompareHashAndPassword([]byte(tag.Password), []byte(password))
+	if email == tag.Email && password_tes == nil {
+		isSuccess = true
+	} else {
+		isSuccess = false
+	}
+	return isSuccess
 }
 
 func HashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err
-}
-
-func CheckPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
 }
