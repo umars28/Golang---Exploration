@@ -3,24 +3,25 @@ package main
 import (
 	"log"
 	"mygo/controller"
+	"mygo/middleware"
 	"net/http"
 )
 
 func main() {
 	const port = ":8080"
 	mux := http.NewServeMux()
-	mux.HandleFunc("/mahasiswa", controller.MahasiswaController)
-	mux.HandleFunc("/tambah", controller.TambahController)
-	mux.HandleFunc("/store", controller.StoreController)
-	mux.HandleFunc("/delete", controller.DeleteController)
-	mux.HandleFunc("/detail", controller.DetailController)
-	mux.HandleFunc("/edit", controller.EditController)
-	mux.HandleFunc("/update", controller.UpdateController)
-	mux.HandleFunc("/register", controller.Register)
-	mux.HandleFunc("/store/register", controller.StoreRegister)
-	mux.HandleFunc("/login", controller.Login)
-	mux.HandleFunc("/login/proses", controller.LoginProses)
-	mux.HandleFunc("/logout", controller.Logout)
+	mux.Handle("/mahasiswa", middleware.Auth(http.HandlerFunc(controller.MahasiswaController)))
+	mux.Handle("/tambah", middleware.Auth(http.HandlerFunc(controller.TambahController)))
+	mux.Handle("/store", middleware.Auth(http.HandlerFunc(controller.StoreController)))
+	mux.Handle("/delete", middleware.Auth(http.HandlerFunc(controller.DeleteController)))
+	mux.Handle("/detail", middleware.Auth(http.HandlerFunc(controller.DetailController)))
+	mux.Handle("/edit", middleware.Auth(http.HandlerFunc(controller.EditController)))
+	mux.Handle("/update", middleware.Auth(http.HandlerFunc(controller.UpdateController)))
+	mux.Handle("/register", middleware.CheckSession(http.HandlerFunc(controller.Register)))
+	mux.Handle("/store/register", middleware.CheckSession(http.HandlerFunc(controller.LoginProses)))
+	mux.Handle("/login", middleware.CheckSession(http.HandlerFunc(controller.Login)))
+	mux.Handle("/login/proses", middleware.CheckSession(http.HandlerFunc(controller.LoginProses)))
+	mux.Handle("/logout", middleware.Auth(http.HandlerFunc(controller.Logout)))
 
 	// mux.HandleFunc("/", controller.HomeController)
 

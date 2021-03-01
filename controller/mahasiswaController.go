@@ -15,14 +15,14 @@ import (
 )
 
 func MahasiswaController(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "auth")
+	// session, _ := store.Get(r, "auth")
 
-	// Check if user is authenticated
-	if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
-		fmt.Println("not authenticated")
-		http.Redirect(w, r, "/login", 302)
-		return
-	}
+	// // Check if user is authenticated
+	// if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+	// 	fmt.Println("not authenticated")
+	// 	http.Redirect(w, r, "/login", 302)
+	// 	return
+	// }
 	if r.Method == "GET" {
 		ctx, cancel := context.WithCancel(context.Background())
 
