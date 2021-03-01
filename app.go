@@ -20,6 +20,7 @@ func main() {
 	mux.HandleFunc("/store/register", controller.StoreRegister)
 	mux.HandleFunc("/login", controller.Login)
 	mux.HandleFunc("/login/proses", controller.LoginProses)
+	mux.HandleFunc("/logout", controller.Logout)
 
 	// mux.HandleFunc("/", controller.HomeController)
 

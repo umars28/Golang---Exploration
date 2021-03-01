@@ -7,6 +7,14 @@ import (
 	"mygo/query"
 	"net/http"
 	"path"
+
+	"github.com/gorilla/sessions"
+)
+
+var (
+	// key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
+	key   = []byte("super-secret-key")
+	store = sessions.NewCookieStore(key)
 )
 
 func Register(w http.ResponseWriter, r *http.Request) {
@@ -101,6 +109,9 @@ func LoginProses(w http.ResponseWriter, r *http.Request) {
 		email := r.Form.Get("email")
 		success := query.Login(email, password)
 		if success {
+			session, _ := store.Get(r, "auth")
+			session.Values["authenticated"] = true
+			session.Save(r, w)
 			fmt.Println("login berhasil")
 			http.Redirect(w, r, "/mahasiswa", 302)
 		} else {
@@ -109,4 +120,12 @@ func LoginProses(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+}
+
+func Logout(res http.ResponseWriter, req *http.Request) {
+	session, _ := store.Get(req, "auth")
+	// Revoke users authentication
+	session.Values["authenticated"] = false
+	session.Save(req, res)
+	http.Redirect(res, req, "/login", 302)
 }
