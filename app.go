@@ -29,11 +29,13 @@ func main() {
 	fileServerCssPlugins := http.FileServer(http.Dir("assets/admin/plugins/css"))
 	fileServerJs := http.FileServer(http.Dir("assets/admin/js"))
 	fileServerJsPlugins := http.FileServer(http.Dir("assets/admin/plugins/js"))
+	fileServerImage := http.FileServer(http.Dir("assets/admin/image"))
 
 	mux.Handle("/static/css/", http.StripPrefix("/static/css", fileServerCss))
 	mux.Handle("/static/plugins/css/", http.StripPrefix("/static/plugins/css", fileServerCssPlugins))
 	mux.Handle("/static/js/", http.StripPrefix("/static/js", fileServerJs))
 	mux.Handle("/static/plugins/js/", http.StripPrefix("/static/plugins/js", fileServerJsPlugins))
+	mux.Handle("/static/image/", http.StripPrefix("/static/image/", fileServerImage))
 
 	log.Println("Starting web on port " + port)
 
