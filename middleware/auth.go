@@ -31,9 +31,11 @@ func CheckSession(next http.Handler) http.Handler {
 		session, _ := store.Get(r, "auth")
 		// Check if user is authenticated
 		if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+			fmt.Println("Anda belum login")
+			next.ServeHTTP(w, r)
 			return
 		}
-		fmt.Println("maaf anda sudah login")
+		fmt.Println("Session sudah ada")
 		http.Redirect(w, r, "/mahasiswa", 302)
 		return
 	})

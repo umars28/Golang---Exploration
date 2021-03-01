@@ -18,7 +18,7 @@ func main() {
 	mux.Handle("/edit", middleware.Auth(http.HandlerFunc(controller.EditController)))
 	mux.Handle("/update", middleware.Auth(http.HandlerFunc(controller.UpdateController)))
 	mux.Handle("/register", middleware.CheckSession(http.HandlerFunc(controller.Register)))
-	mux.Handle("/store/register", middleware.CheckSession(http.HandlerFunc(controller.LoginProses)))
+	mux.Handle("/store/register", middleware.CheckSession(http.HandlerFunc(controller.StoreRegister)))
 	mux.Handle("/login", middleware.CheckSession(http.HandlerFunc(controller.Login)))
 	mux.Handle("/login/proses", middleware.CheckSession(http.HandlerFunc(controller.LoginProses)))
 	mux.Handle("/logout", middleware.Auth(http.HandlerFunc(controller.Logout)))
