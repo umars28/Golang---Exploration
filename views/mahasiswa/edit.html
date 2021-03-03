@@ -23,7 +23,7 @@
               </div>
                 <div class="card">
                     {{ range .}}
-                  <form method="POST" action="/update?id={{ .ID }}">                  
+                  <form method="POST" action="/update?id={{ .ID }}&userId={{ .User_id }}">                  
                     <div class="card-body">
                       <div class="form-group">
                         <label>ID</label>
@@ -40,6 +40,10 @@
                       <div class="form-group">
                         <label>Semester</label>
                         <input type="number" class="form-control" value="{{ .Semester }}" name="semester" required="">
+                      </div>
+                      <div class="form-group">
+                        <label>Kelas</label>
+                        <input type="number" class="form-control" value="{{ .Kelas_id }}" name="kelas" required="">
                       </div>
                     </div>
                     <button type="submit" class="btn btn-sm btn-primary ml-4">Update</button>

@@ -104,7 +104,9 @@ func StoreController(w http.ResponseWriter, r *http.Request) {
 	nim := r.Form.Get("nim")
 	name := r.Form.Get("name")
 	semester := r.Form.Get("semester")
-	query.CreateRow(name, nim, semester)
+	email := r.Form.Get("email")
+	kelas_id := r.Form.Get("kelas_id")
+	query.CreateRow(name, nim, semester, email, kelas_id)
 	fmt.Println("success")
 	http.Redirect(w, r, "/mahasiswa", 302)
 	w.Write([]byte("<script>alert('Sukses menambahkan data')</script>"))
@@ -113,12 +115,16 @@ func StoreController(w http.ResponseWriter, r *http.Request) {
 
 func DeleteController(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
+	user_id := r.URL.Query().Get("userId")
+	fmt.Println(id)
+	fmt.Println(user_id)
 	if id == "" {
 		fmt.Println(w, "id tidak boleh kosong", http.StatusBadRequest)
 		return
 	}
 	mhs, _ := strconv.Atoi(id)
-	query.Delete(mhs)
+	user, _ := strconv.Atoi(user_id)
+	query.Delete(mhs, user)
 	fmt.Println("sukses hapus data")
 	http.Redirect(w, r, "/mahasiswa", 302)
 	w.Write([]byte("<script>alert('Sukses menghapus data')</script>"))
@@ -126,8 +132,7 @@ func DeleteController(w http.ResponseWriter, r *http.Request) {
 }
 
 const (
-	table          = "mahasiswa"
-	layoutDateTime = "2006-01-02 15:04:05"
+	table = "mahasiswa"
 )
 
 func DetailController(w http.ResponseWriter, r *http.Request) {
@@ -203,6 +208,7 @@ func EditController(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateController(w http.ResponseWriter, r *http.Request) {
+	user_id := r.URL.Query().Get("userId")
 	if r.Method != http.MethodPost {
 		http.Error(w, "Tidak di ijinkan", http.StatusNotFound)
 		return
@@ -218,8 +224,9 @@ func UpdateController(w http.ResponseWriter, r *http.Request) {
 	id := r.Form.Get("id")
 	nim := r.Form.Get("nim")
 	name := r.Form.Get("name")
+	kelas := r.Form.Get("kelas")
 	semester := r.Form.Get("semester")
-	query.Update(id, nim, name, semester)
+	query.Update(id, nim, name, semester, kelas, user_id)
 	fmt.Println("success")
 	http.Redirect(w, r, "/mahasiswa", 302)
 	w.Write([]byte("<script>alert('Sukses mengubah data')</script>"))

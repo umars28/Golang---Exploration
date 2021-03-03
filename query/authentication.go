@@ -24,10 +24,13 @@ func Register(name, nim, email, pass string) {
 		panic(eb.Error())
 	}
 	password, _ := HashPassword(pass)
-	_, error := db.Query(`INSERT INTO users (nim, nama, email, password) VALUES (?, ?, ?, ?)`, nim, name, email, password)
-
+	res, error := db.Exec(`INSERT INTO users (nim, nama, email, password) VALUES (?, ?, ?, ?)`, nim, name, email, password)
 	// if there is an error inserting, handle it
-	if error != nil {
+	id, _ := res.LastInsertId()
+	var semester int
+	var kelas_id int
+	_, error2 := db.Exec(`INSERT INTO mahasiswa (nim, name, semester , users_id, kelas_id) VALUES (?, ?, ?, ?, ?)`, nim, name, semester, id, kelas_id)
+	if error != nil || error2 != nil {
 		panic(error.Error())
 	}
 	fmt.Println("success")

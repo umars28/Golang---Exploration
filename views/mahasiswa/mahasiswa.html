@@ -19,8 +19,7 @@
                     <th>NIM</th>
                     <th>Name</th>
                     <th>Semester</th>
-                    <th>Dibuat Tanggal</th>
-                    <th>Diupdate Tanggal</th>
+                    <th>Kelas</th>
                     <th>Aksi</th>
                   </tr>
                   {{ range .}}
@@ -29,11 +28,10 @@
                     <td class="font-weight-600"><a href="/detail?id={{ .ID }}">{{ .NIM }}</a></td>
                     <td><div class="badge badge-warning">{{ .Name }}</div></td>
                     <td>{{ .Semester }}</td>
-                    <td>{{ .CreatedAt }}</td>
-                    <td>{{ .UpdatedAt }}</td>
+                    <td>{{ .Kelas_id }}</td>                  
                     <td>
                       <a href="/edit?id={{ .ID }}" class="btn btn-primary btn-sm mb-2">Edit</a>
-                      <a href="/delete?id={{ .ID }}" class="btn btn-primary btn-sm mb-2">Hapus</a>
+                      <a href="/delete?id={{ .ID }}&userId={{ .User_id }}" class="btn btn-primary btn-sm mb-2">Hapus</a>
                     </td>
                   </tr>
                   {{ end }}

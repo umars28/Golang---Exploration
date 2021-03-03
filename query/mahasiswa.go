@@ -7,12 +7,12 @@ import (
 	"log"
 	"mygo/config"
 	"mygo/model"
-	"time"
+	"strconv"
 )
 
 const (
-	table          = "mahasiswa"
-	layoutDateTime = "2006-01-02 15:04:05"
+	table  = "mahasiswa"
+	table2 = "users"
 )
 
 func GetAll(ctx context.Context) ([]model.Mahasiswa, error) {
@@ -36,25 +36,13 @@ func GetAll(ctx context.Context) ([]model.Mahasiswa, error) {
 	}
 	for rowQuery.Next() {
 		var mahasiswa model.Mahasiswa
-		var created_at, updated_at string
-
 		if err = rowQuery.Scan(&mahasiswa.ID,
 			&mahasiswa.NIM,
 			&mahasiswa.Name,
 			&mahasiswa.Semester,
-			&created_at,
-			&updated_at); err != nil {
+			&mahasiswa.User_id,
+			&mahasiswa.Kelas_id); err != nil {
 			return nil, err
-		}
-
-		// format string ke datetime
-		mahasiswa.CreatedAt, err = time.Parse(layoutDateTime, created_at)
-		if err != nil {
-			log.Fatal(err)
-		}
-		mahasiswa.UpdatedAt, err = time.Parse(layoutDateTime, updated_at)
-		if err != nil {
-			log.Fatal(err)
 		}
 
 		mahasiswas = append(mahasiswas, mahasiswa)
@@ -63,7 +51,7 @@ func GetAll(ctx context.Context) ([]model.Mahasiswa, error) {
 
 }
 
-func CreateRow(name, nim, semester string) {
+func CreateRow(name, nim, semester, email, kelas_id string) {
 	db, e := config.MySQL()
 
 	if e != nil {
@@ -74,17 +62,18 @@ func CreateRow(name, nim, semester string) {
 	if eb != nil {
 		panic(eb.Error())
 	}
-
-	_, error := db.Query(`INSERT INTO mahasiswa (nim, name, semester, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`, nim, name, semester, time.Now(), time.Now())
-
-	// if there is an error inserting, handle it
-	if error != nil {
+	password, _ := HashPassword(nim)
+	res, error := db.Exec(`INSERT INTO users (nim, nama, email, password) VALUES (?, ?, ?, ?)`, nim, name, email, password)
+	id, _ := res.LastInsertId()
+	fmt.Println(id)
+	_, error2 := db.Exec(`INSERT INTO mahasiswa (nim, name, semester , users_id, kelas_id) VALUES (?, ?, ?, ?, ?)`, nim, name, semester, id, kelas_id)
+	if error != nil || error2 != nil {
 		panic(error.Error())
 	}
 	fmt.Println("success")
 }
 
-func Delete(mhs int) {
+func Delete(mhs, user_id int) {
 
 	db, err := config.MySQL()
 
@@ -93,8 +82,10 @@ func Delete(mhs int) {
 	}
 
 	queryText := fmt.Sprintf("DELETE FROM %v where id = '%d'", table, mhs)
+	queryText2 := fmt.Sprintf("DELETE FROM %v where id = '%d'", table2, user_id)
 	_, error := db.Query(queryText)
-	if error != nil {
+	_, error2 := db.Query(queryText2)
+	if error != nil || error2 != nil {
 		fmt.Println("failed")
 	}
 
@@ -127,24 +118,13 @@ func Detail(ctx context.Context, mhs int) ([]model.Mahasiswa, error) {
 	}
 	for rowQuery.Next() {
 		var mahasiswa model.Mahasiswa
-		var created_at, updated_at string
 
 		if err = rowQuery.Scan(&mahasiswa.ID,
 			&mahasiswa.NIM,
 			&mahasiswa.Name,
 			&mahasiswa.Semester,
-			&created_at,
-			&updated_at); err != nil {
-		}
-
-		// format string ke datetime
-		mahasiswa.CreatedAt, err = time.Parse(layoutDateTime, created_at)
-		if err != nil {
-			log.Fatal(err)
-		}
-		mahasiswa.UpdatedAt, err = time.Parse(layoutDateTime, updated_at)
-		if err != nil {
-			log.Fatal(err)
+			&mahasiswa.User_id,
+			&mahasiswa.Kelas_id); err != nil {
 		}
 
 		mahasiswas = append(mahasiswas, mahasiswa)
@@ -178,24 +158,13 @@ func Edit(ctx context.Context, mhs int) ([]model.Mahasiswa, error) {
 	}
 	for rowQuery.Next() {
 		var mahasiswa model.Mahasiswa
-		var created_at, updated_at string
 
 		if err = rowQuery.Scan(&mahasiswa.ID,
 			&mahasiswa.NIM,
 			&mahasiswa.Name,
 			&mahasiswa.Semester,
-			&created_at,
-			&updated_at); err != nil {
-		}
-
-		// format string ke datetime
-		mahasiswa.CreatedAt, err = time.Parse(layoutDateTime, created_at)
-		if err != nil {
-			log.Fatal(err)
-		}
-		mahasiswa.UpdatedAt, err = time.Parse(layoutDateTime, updated_at)
-		if err != nil {
-			log.Fatal(err)
+			&mahasiswa.User_id,
+			&mahasiswa.Kelas_id); err != nil {
 		}
 
 		mahasiswas = append(mahasiswas, mahasiswa)
@@ -207,7 +176,7 @@ func Edit(ctx context.Context, mhs int) ([]model.Mahasiswa, error) {
 	return mahasiswas, nil
 }
 
-func Update(id, nim, name, semester string) {
+func Update(id, nim, name, semester, kelas, userId string) {
 	db, e := config.MySQL()
 
 	if e != nil {
@@ -218,9 +187,10 @@ func Update(id, nim, name, semester string) {
 	if eb != nil {
 		panic(eb.Error())
 	}
-
-	_, error := db.Query(`UPDATE mahasiswa SET nim = ?, name = ?, semester = ?, created_at = ?, updated_at = ? where id = ?`, nim, name, semester, time.Now(), time.Now(), id)
-	if error != nil {
+	user, _ := strconv.Atoi(userId)
+	_, error := db.Query(`UPDATE mahasiswa SET nim = ?, name = ?, semester = ?, kelas_id = ? where id = ?`, nim, name, semester, kelas, id)
+	_, error2 := db.Query(`UPDATE users SET nim = ?, nama = ? where id = ?`, nim, name, user)
+	if error != nil || error2 != nil {
 		panic(error.Error())
 	}
 }
