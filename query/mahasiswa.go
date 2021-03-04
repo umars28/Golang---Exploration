@@ -62,8 +62,9 @@ func CreateRow(name, nim, semester, email, kelas_id string) {
 	if eb != nil {
 		panic(eb.Error())
 	}
+	role := "Mahasiswa"
 	password, _ := HashPassword(nim)
-	res, error := db.Exec(`INSERT INTO users (nim, nama, email, password) VALUES (?, ?, ?, ?)`, nim, name, email, password)
+	res, error := db.Exec(`INSERT INTO users (nama, email, password, roles) VALUES (?, ?, ?, ?)`, name, email, password, role)
 	id, _ := res.LastInsertId()
 	fmt.Println(id)
 	_, error2 := db.Exec(`INSERT INTO mahasiswa (nim, name, semester , users_id, kelas_id) VALUES (?, ?, ?, ?, ?)`, nim, name, semester, id, kelas_id)
@@ -187,9 +188,10 @@ func Update(id, nim, name, semester, kelas, userId string) {
 	if eb != nil {
 		panic(eb.Error())
 	}
+	password, _ := HashPassword(nim)
 	user, _ := strconv.Atoi(userId)
 	_, error := db.Query(`UPDATE mahasiswa SET nim = ?, name = ?, semester = ?, kelas_id = ? where id = ?`, nim, name, semester, kelas, id)
-	_, error2 := db.Query(`UPDATE users SET nim = ?, nama = ? where id = ?`, nim, name, user)
+	_, error2 := db.Query(`UPDATE users SET nama = ?, password = ? where id = ?`, name, password, user)
 	if error != nil || error2 != nil {
 		panic(error.Error())
 	}

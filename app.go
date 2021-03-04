@@ -10,6 +10,7 @@ import (
 func main() {
 	const port = ":8080"
 	mux := http.NewServeMux()
+	// Mahasiswa
 	mux.Handle("/mahasiswa", middleware.Auth(http.HandlerFunc(controller.MahasiswaController)))
 	mux.Handle("/tambah", middleware.Auth(http.HandlerFunc(controller.TambahController)))
 	mux.Handle("/store", middleware.Auth(http.HandlerFunc(controller.StoreController)))
@@ -22,8 +23,12 @@ func main() {
 	mux.Handle("/login", middleware.CheckSession(http.HandlerFunc(controller.Login)))
 	mux.Handle("/login/proses", middleware.CheckSession(http.HandlerFunc(controller.LoginProses)))
 	mux.Handle("/logout", middleware.Auth(http.HandlerFunc(controller.Logout)))
+	// End Mahasiswa
 
-	// mux.HandleFunc("/", controller.HomeController)
+	// User
+	mux.Handle("/user", middleware.Auth(http.HandlerFunc(controller.UserController)))
+	mux.Handle("/tambah/user", middleware.Auth(http.HandlerFunc(controller.TambahUserController)))
+	// End User
 
 	fileServerCss := http.FileServer(http.Dir("assets/admin/css"))
 	fileServerCssPlugins := http.FileServer(http.Dir("assets/admin/plugins/css"))

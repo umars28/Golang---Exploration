@@ -12,7 +12,7 @@ import (
 
 var db *sql.DB
 
-func Register(name, nim, email, pass string) {
+func Register(name, nim, email, pass, role string) {
 	db, e := config.MySQL()
 
 	if e != nil {
@@ -24,7 +24,7 @@ func Register(name, nim, email, pass string) {
 		panic(eb.Error())
 	}
 	password, _ := HashPassword(pass)
-	res, error := db.Exec(`INSERT INTO users (nim, nama, email, password) VALUES (?, ?, ?, ?)`, nim, name, email, password)
+	res, error := db.Exec(`INSERT INTO users (nama, email, password, roles) VALUES (?, ?, ?, ?)`, name, email, password, role)
 	// if there is an error inserting, handle it
 	id, _ := res.LastInsertId()
 	var semester int
@@ -51,7 +51,7 @@ func Login(email, password string) bool {
 	var tag model.User
 	var isSuccess bool
 	// Execute the query
-	db.QueryRow("SELECT * FROM users where email = ?", email).Scan(&tag.ID, &tag.Nama, &tag.Nim, &tag.Email, &tag.Password)
+	db.QueryRow("SELECT * FROM users where email = ?", email).Scan(&tag.ID, &tag.Nama, &tag.Email, &tag.Password, &tag.Roles)
 	var password_tes = bcrypt.CompareHashAndPassword([]byte(tag.Password), []byte(password))
 	if email == tag.Email && password_tes == nil {
 		isSuccess = true

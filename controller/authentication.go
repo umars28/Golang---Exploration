@@ -61,7 +61,8 @@ func StoreRegister(w http.ResponseWriter, r *http.Request) {
 		name := r.Form.Get("name")
 		nim := r.Form.Get("nim")
 		email := r.Form.Get("email")
-		query.Register(name, nim, email, password)
+		roles := "Mahasiswa"
+		query.Register(name, nim, email, password, roles)
 		fmt.Println("success")
 		http.Redirect(w, r, "/login", 302)
 		w.Write([]byte("<script>alert('Sukses menambahkan data')</script>"))

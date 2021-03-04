@@ -8,7 +8,7 @@ var err error
 type User struct {
 	ID       int
 	Nama     string
-	Nim      string
 	Email    string
 	Password string
+	Roles    string
 }
