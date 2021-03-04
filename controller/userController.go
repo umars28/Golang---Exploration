@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"mygo/config"
 	"mygo/query"
 	"net/http"
 	"path"
@@ -30,20 +31,20 @@ func UserController(w http.ResponseWriter, r *http.Request) {
 		)
 		if err != nil {
 			log.Println(err)
-			http.Error(w, "error is happening, keep calm", http.StatusInternalServerError)
+			config.MessageError500(w, r)
 			return
 		}
 
 		err = template.Execute(w, user)
 		if err != nil {
 			log.Println(err)
-			http.Error(w, "Error is happening, keep calms", http.StatusInternalServerError)
+			config.MessageError500(w, r)
 			return
 		}
 		return
 	}
 
-	http.Error(w, "Tidak di ijinkan", http.StatusNotFound)
+	config.MessageError503(w, r)
 	return
 }
 
@@ -64,33 +65,33 @@ func UserEditController(w http.ResponseWriter, r *http.Request) {
 		)
 		if err != nil {
 			log.Println(err)
-			http.Error(w, "error is happening, keep calm", http.StatusInternalServerError)
+			config.MessageError500(w, r)
 			return
 		}
 
 		err = template.Execute(w, users)
 		if err != nil {
 			log.Println(err)
-			http.Error(w, "Error is happening, keep calms", http.StatusInternalServerError)
+			config.MessageError500(w, r)
 			return
 		}
 		return
 	}
 
-	http.Error(w, "Tidak di ijinkan", http.StatusNotFound)
+	config.MessageError503(w, r)
 	return
 }
 
 func UserUpdateController(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
-		http.Error(w, "Tidak di ijinkan", http.StatusNotFound)
+		config.MessageError503(w, r)
 		return
 	}
 
 	err := r.ParseForm()
 	if err != nil {
 		log.Println(err)
-		http.Error(w, "Erorr is happening, keep calms", http.StatusInternalServerError)
+		config.MessageError500(w, r)
 		return
 	}
 

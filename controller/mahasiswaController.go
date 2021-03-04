@@ -34,20 +34,20 @@ func MahasiswaController(w http.ResponseWriter, r *http.Request) {
 		)
 		if err != nil {
 			log.Println(err)
-			http.Error(w, "error is happening, keep calm", http.StatusInternalServerError)
+			config.MessageError500(w, r)
 			return
 		}
 
 		err = template.Execute(w, mahasiswas)
 		if err != nil {
 			log.Println(err)
-			http.Error(w, "Error is happening, keep calms", http.StatusInternalServerError)
+			config.MessageError500(w, r)
 			return
 		}
 		return
 	}
 
-	http.Error(w, "Tidak di ijinkan", http.StatusNotFound)
+	config.MessageError503(w, r)
 	return
 }
 
@@ -62,20 +62,20 @@ func TambahController(w http.ResponseWriter, r *http.Request) {
 		)
 		if err != nil {
 			log.Println(err)
-			http.Error(w, "error is happening, keep calm", http.StatusInternalServerError)
+			config.MessageError500(w, r)
 			return
 		}
 
 		err = template.Execute(w, nil)
 		if err != nil {
 			log.Println(err)
-			http.Error(w, "Error is happening, keep calms", http.StatusInternalServerError)
+			config.MessageError500(w, r)
 			return
 		}
 		return
 	}
 
-	http.Error(w, "Tidak di ijinkan", http.StatusNotFound)
+	config.MessageError503(w, r)
 	return
 }
 
@@ -90,7 +90,7 @@ func StoreController(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseForm()
 	if err != nil {
 		log.Println(err)
-		http.Error(w, "Erorr is happening, keep calms", http.StatusInternalServerError)
+		config.MessageError500(w, r)
 		return
 	}
 
@@ -112,6 +112,7 @@ func DeleteController(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(id)
 	fmt.Println(user_id)
 	if id == "" {
+		config.MessageError500(w, r)
 		fmt.Println(w, "id tidak boleh kosong", http.StatusBadRequest)
 		return
 	}
@@ -137,7 +138,7 @@ func DetailController(w http.ResponseWriter, r *http.Request) {
 		mahasiswas, err := query.Detail(ctx, mhs)
 		if err != nil {
 			log.Println(err)
-			http.Error(w, "error is happening, keep calm", http.StatusInternalServerError)
+			config.MessageError500(w, r)
 			return
 		}
 		template, err := template.ParseFiles(
@@ -149,14 +150,14 @@ func DetailController(w http.ResponseWriter, r *http.Request) {
 		)
 		if err != nil {
 			log.Println(err)
-			http.Error(w, "error is happening, keep calm", http.StatusInternalServerError)
+			config.MessageError500(w, r)
 			return
 		}
 
 		err = template.Execute(w, mahasiswas)
 		if err != nil {
 			log.Println(err)
-			http.Error(w, "Error is happening, keep calms", http.StatusInternalServerError)
+			config.MessageError500(w, r)
 			return
 		}
 		return
@@ -183,14 +184,14 @@ func EditController(w http.ResponseWriter, r *http.Request) {
 		)
 		if err != nil {
 			log.Println(err)
-			http.Error(w, "error is happening, keep calm", http.StatusInternalServerError)
+			config.MessageError500(w, r)
 			return
 		}
 
 		err = template.Execute(w, mahasiswas)
 		if err != nil {
 			log.Println(err)
-			http.Error(w, "Error is happening, keep calms", http.StatusInternalServerError)
+			config.MessageError500(w, r)
 			return
 		}
 		return
@@ -203,14 +204,14 @@ func EditController(w http.ResponseWriter, r *http.Request) {
 func UpdateController(w http.ResponseWriter, r *http.Request) {
 	user_id := r.URL.Query().Get("userId")
 	if r.Method != http.MethodPost {
-		http.Error(w, "Tidak di ijinkan", http.StatusNotFound)
+		config.MessageError503(w, r)
 		return
 	}
 
 	err := r.ParseForm()
 	if err != nil {
 		log.Println(err)
-		http.Error(w, "Erorr is happening, keep calms", http.StatusInternalServerError)
+		config.MessageError500(w, r)
 		return
 	}
 

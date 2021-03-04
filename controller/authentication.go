@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"mygo/config"
 	"mygo/query"
 	"net/http"
 	"path"
@@ -19,7 +20,7 @@ var (
 
 func Register(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
-		http.Error(w, "Tidak di ijinkan", http.StatusNotFound)
+		config.MessageError503(w, r)
 		return
 	}
 	template, err := template.ParseFiles(
@@ -31,14 +32,14 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		log.Println(err)
-		http.Error(w, "error is happening, keep calm", http.StatusInternalServerError)
+		config.MessageError500(w, r)
 		return
 	}
 
 	err = template.Execute(w, nil)
 	if err != nil {
 		log.Println(err)
-		http.Error(w, "Error is happening, keep calms", http.StatusInternalServerError)
+		config.MessageError500(w, r)
 		return
 	}
 	return
@@ -49,13 +50,13 @@ func StoreRegister(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		if err != nil {
 			log.Println(err)
-			http.Error(w, "Erorr is happening, keep calms", http.StatusInternalServerError)
+			config.MessageError500(w, r)
 			return
 		}
 		password := r.Form.Get("password")
 		password2 := r.Form.Get("password-confirm")
 		if password != password2 {
-			http.Error(w, "Mohon maaf, Konfirmasi Password Harus Sama", http.StatusInternalServerError)
+			config.ConfirmPassword(w, r)
 			return
 		}
 		name := r.Form.Get("name")
@@ -73,7 +74,7 @@ func StoreRegister(w http.ResponseWriter, r *http.Request) {
 
 func Login(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
-		http.Error(w, "Tidak di ijinkan", http.StatusNotFound)
+		config.MessageError503(w, r)
 		return
 	}
 	template, err := template.ParseFiles(
@@ -85,14 +86,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	)
 	if err != nil {
 		log.Println(err)
-		http.Error(w, "error is happening, keep calm", http.StatusInternalServerError)
+		config.MessageError500(w, r)
 		return
 	}
 
 	err = template.Execute(w, nil)
 	if err != nil {
 		log.Println(err)
-		http.Error(w, "Error is happening, keep calms", http.StatusInternalServerError)
+		config.MessageError500(w, r)
 		return
 	}
 	return
@@ -103,7 +104,7 @@ func LoginProses(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseForm()
 		if err != nil {
 			log.Println(err)
-			http.Error(w, "Erorr is happening, keep calms", http.StatusInternalServerError)
+			config.MessageError500(w, r)
 			return
 		}
 		password := r.Form.Get("password")
