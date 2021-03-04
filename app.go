@@ -27,7 +27,8 @@ func main() {
 
 	// User
 	mux.Handle("/user", middleware.Auth(http.HandlerFunc(controller.UserController)))
-	mux.Handle("/tambah/user", middleware.Auth(http.HandlerFunc(controller.TambahUserController)))
+	mux.Handle("/edit-user", middleware.Auth(http.HandlerFunc(controller.UserEditController)))
+	mux.Handle("/update-user", middleware.Auth(http.HandlerFunc(controller.UserUpdateController)))
 	// End User
 
 	fileServerCss := http.FileServer(http.Dir("assets/admin/css"))

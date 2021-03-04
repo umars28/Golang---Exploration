@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"mygo/config"
 	"mygo/query"
 	"net/http"
 	"path"
@@ -161,7 +162,7 @@ func DetailController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	http.Error(w, "Tidak di ijinkan", http.StatusNotFound)
+	config.MessageError503(w, r)
 	return
 }
 

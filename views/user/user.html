@@ -7,9 +7,6 @@
           <div class="card">
             <div class="card-header">
               <h4>User</h4>
-              <div class="card-header-action">
-                <a href="/tambah/user" class="btn btn-danger">Tambah <i class="fas fa-chevron-right"></i></a>
-              </div>
             </div>
             <div class="card-body p-0">
               <div class="table-responsive table-invoice">
@@ -28,8 +25,7 @@
                     <td>{{ .Email }}</td>
                     <td>{{ .Roles }}</td>                  
                     <td>
-                      <a href="" class="btn btn-primary btn-sm mb-2">Edit</a>
-                      <a href="" class="btn btn-primary btn-sm mb-2">Hapus</a>
+                      <a href="/edit-user?id={{ .ID }}" class="btn btn-primary btn-sm mb-2">Edit</a>
                     </td>
                   </tr>
                   {{ end }}

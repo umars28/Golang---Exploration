@@ -8,6 +8,7 @@ import (
 	"mygo/query"
 	"net/http"
 	"path"
+	"strconv"
 )
 
 func UserController(w http.ResponseWriter, r *http.Request) {
@@ -46,10 +47,16 @@ func UserController(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func TambahUserController(w http.ResponseWriter, r *http.Request) {
+func UserEditController(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
+		id := r.URL.Query().Get("id")
+		userId, _ := strconv.Atoi(id)
+		ctx, cancel := context.WithCancel(context.Background())
+
+		defer cancel()
+		users, err := query.EditUser(ctx, userId)
 		template, err := template.ParseFiles(
-			path.Join("views/user", "tambah.html"),
+			path.Join("views/user", "edit.html"),
 			path.Join("views/template", "main.html"),
 			path.Join("views/template", "header.html"),
 			path.Join("views/template", "sidebar.html"),
@@ -61,7 +68,7 @@ func TambahUserController(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = template.Execute(w, nil)
+		err = template.Execute(w, users)
 		if err != nil {
 			log.Println(err)
 			http.Error(w, "Error is happening, keep calms", http.StatusInternalServerError)
@@ -71,5 +78,30 @@ func TambahUserController(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Error(w, "Tidak di ijinkan", http.StatusNotFound)
+	return
+}
+
+func UserUpdateController(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, "Tidak di ijinkan", http.StatusNotFound)
+		return
+	}
+
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Erorr is happening, keep calms", http.StatusInternalServerError)
+		return
+	}
+
+	id := r.Form.Get("id")
+	nama := r.Form.Get("nama")
+	email := r.Form.Get("email")
+	password := r.Form.Get("password")
+	roles := r.Form.Get("roles")
+	query.UserUpdate(id, nama, email, password, roles)
+	fmt.Println("success")
+	http.Redirect(w, r, "/user", 302)
+	w.Write([]byte("<script>alert('Sukses mengubah data')</script>"))
 	return
 }
