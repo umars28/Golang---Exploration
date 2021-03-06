@@ -6,26 +6,26 @@
         <div class="col-md-12">
           <div class="card">
             <div class="card-header">
-              <h4>Mahasiswa</h4>
+              <h4>Dosen</h4>
             </div>
             <div class="card-body p-0">            
                 <div class="card">
                   <div class="row">
                     <div class="col-md-6">
                       <div class="card-header">
-                        <h4>Tambah Mahasiswa</h4>                     
+                        <h4>Tambah Dosen</h4>                     
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="text-right mr-4 mt-5">
-                        <a href="/mahasiswa"><button class="btn btn-danger">Kembali</button></a>
+                        <a href="/dosen"><button class="btn btn-danger">Kembali</button></a>
                       </div>
                     </div>
                   </div>
-                  <form action="/store" method="POST">
+                  <form action="/store-dosen" method="POST">
                     <div class="card-body">
                       <div class="form-group">
-                        <label>NIM</label>
+                        <label>NIP</label>
                         <input type="text" class="form-control" name="nim" required="">
                       </div>
                       <div class="form-group">
@@ -37,12 +37,8 @@
                         <input type="email" class="form-control" name="email" required="">
                       </div>
                       <div class="form-group">
-                        <label>Semester</label>
-                        <input type="number" class="form-control" name="semester" required="">
-                      </div>
-                      <div class="form-group">
-                        <label for="kelas">Kelas</label>
-                        <select name="kelas_id" class="form-control" id="kelas" required>
+                        <label for="matkul">Matkul</label>
+                        <select name="matkul_id" class="form-control" id="matkul" required>
                           {{ range .}}
                           <option value="{{ .ID }}">{{ .Nama }}</option>
                           {{ end }}

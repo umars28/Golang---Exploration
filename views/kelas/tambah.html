@@ -1,0 +1,43 @@
+{{ template "layout" . }}
+{{ define "main" }}
+<div class="main-content">
+    <section class="section">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h4>Kelas</h4>
+            </div>
+            <div class="card-body p-0">            
+                <div class="card">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="card-header">
+                        <h4>Tambah Kelas</h4>                     
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="text-right mr-4 mt-5">
+                        <a href="/kelas"><button class="btn btn-danger">Kembali</button></a>
+                      </div>
+                    </div>
+                  </div>
+                  <form action="/store-kelas" method="POST">
+                    <div class="card-body">
+                      <div class="form-group">
+                        <label>Nama</label>
+                        <input type="text" class="form-control" name="name" required="">
+                      </div>
+                    </div>
+                    <div class="card-footer text-left">
+                      <button class="btn btn-primary">Tambah</button>
+                    </div>
+                  </form>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+{{ end }}

@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"html/template"
 	"log"
@@ -15,18 +14,18 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func MahasiswaController(w http.ResponseWriter, r *http.Request) {
+func DosenController(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		ctx, cancel := context.WithCancel(context.Background())
 
 		defer cancel()
-		mahasiswas, err := query.GetAll(ctx)
+		listDosen, err := query.GetAllDosen(ctx)
 
 		if err != nil {
 			fmt.Println(err)
 		}
 		template, err := template.ParseFiles(
-			path.Join("views/mahasiswa", "mahasiswa.html"),
+			path.Join("views/dosen", "dosen.html"),
 			path.Join("views/template", "main.html"),
 			path.Join("views/template", "header.html"),
 			path.Join("views/template", "sidebar.html"),
@@ -38,7 +37,7 @@ func MahasiswaController(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = template.Execute(w, mahasiswas)
+		err = template.Execute(w, listDosen)
 		if err != nil {
 			log.Println(err)
 			config.MessageError500(w, r)
@@ -51,18 +50,18 @@ func MahasiswaController(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func TambahController(w http.ResponseWriter, r *http.Request) {
+func DosenTambahController(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		ctx, cancel := context.WithCancel(context.Background())
 
 		defer cancel()
-		kelas, err := query.GetAllKelas(ctx)
+		listMatkul, err := query.GetAllMatkul(ctx)
 		if err != nil {
 			config.MessageError503(w, r)
 			return
 		}
 		template, err := template.ParseFiles(
-			path.Join("views/mahasiswa", "tambah.html"),
+			path.Join("views/dosen", "tambah.html"),
 			path.Join("views/template", "main.html"),
 			path.Join("views/template", "header.html"),
 			path.Join("views/template", "sidebar.html"),
@@ -74,7 +73,7 @@ func TambahController(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = template.Execute(w, kelas)
+		err = template.Execute(w, listMatkul)
 		if err != nil {
 			log.Println(err)
 			config.MessageError500(w, r)
@@ -87,9 +86,7 @@ func TambahController(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-var db *sql.DB
-
-func StoreController(w http.ResponseWriter, r *http.Request) {
+func DosenStoreController(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Tidak di ijinkan", http.StatusNotFound)
 		return
@@ -102,55 +99,48 @@ func StoreController(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	nim := r.Form.Get("nim")
+	nip := r.Form.Get("nip")
 	name := r.Form.Get("name")
-	semester := r.Form.Get("semester")
 	email := r.Form.Get("email")
-	kelas_id := r.Form.Get("kelas_id")
-	query.CreateRow(name, nim, semester, email, kelas_id)
+	matkul_id := r.Form.Get("matkul_id")
+	query.CreateRowDosen(name, nip, email, matkul_id)
 	fmt.Println("success")
-	http.Redirect(w, r, "/mahasiswa", 302)
+	http.Redirect(w, r, "/dosen", 302)
 	w.Write([]byte("<script>alert('Sukses menambahkan data')</script>"))
 	return
 }
 
-func DeleteController(w http.ResponseWriter, r *http.Request) {
+func DosenDeleteController(w http.ResponseWriter, r *http.Request) {
 	id := r.URL.Query().Get("id")
 	user_id := r.URL.Query().Get("userId")
-	fmt.Println(id)
-	fmt.Println(user_id)
 	if id == "" {
 		config.MessageError500(w, r)
 		fmt.Println(w, "id tidak boleh kosong", http.StatusBadRequest)
 		return
 	}
-	mhs, _ := strconv.Atoi(id)
+	dosen, _ := strconv.Atoi(id)
 	user, _ := strconv.Atoi(user_id)
-	query.Delete(mhs, user)
+	query.DeleteDosen(dosen, user)
 	fmt.Println("sukses hapus data")
-	http.Redirect(w, r, "/mahasiswa", 302)
+	http.Redirect(w, r, "/dosen", 302)
 	w.Write([]byte("<script>alert('Sukses menghapus data')</script>"))
 	return
 }
 
-const (
-	table = "mahasiswa"
-)
-
-func DetailController(w http.ResponseWriter, r *http.Request) {
+func DosenDetailController(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		id := r.URL.Query().Get("id")
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
-		mhs, _ := strconv.Atoi(id)
-		mahasiswas, err := query.Detail(ctx, mhs)
+		dosen, _ := strconv.Atoi(id)
+		listDosen, err := query.DetailDosen(ctx, dosen)
 		if err != nil {
 			log.Println(err)
 			config.MessageError500(w, r)
 			return
 		}
 		template, err := template.ParseFiles(
-			path.Join("views/mahasiswa", "detail.html"),
+			path.Join("views/dosen", "detail.html"),
 			path.Join("views/template", "main.html"),
 			path.Join("views/template", "header.html"),
 			path.Join("views/template", "sidebar.html"),
@@ -162,7 +152,7 @@ func DetailController(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = template.Execute(w, mahasiswas)
+		err = template.Execute(w, listDosen)
 		if err != nil {
 			log.Println(err)
 			config.MessageError500(w, r)
@@ -175,16 +165,16 @@ func DetailController(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func EditController(w http.ResponseWriter, r *http.Request) {
+func DosenEditController(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		id := r.URL.Query().Get("id")
-		mhs, _ := strconv.Atoi(id)
+		dosen, _ := strconv.Atoi(id)
 		ctx, cancel := context.WithCancel(context.Background())
 
 		defer cancel()
-		mahasiswas, err := query.Edit(ctx, mhs)
+		listDosen, err := query.EditDosen(ctx, dosen)
 		template, err := template.ParseFiles(
-			path.Join("views/mahasiswa", "edit.html"),
+			path.Join("views/dosen", "edit.html"),
 			path.Join("views/template", "main.html"),
 			path.Join("views/template", "header.html"),
 			path.Join("views/template", "sidebar.html"),
@@ -196,7 +186,7 @@ func EditController(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		err = template.Execute(w, mahasiswas)
+		err = template.Execute(w, listDosen)
 		if err != nil {
 			log.Println(err)
 			config.MessageError500(w, r)
@@ -209,7 +199,7 @@ func EditController(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
-func UpdateController(w http.ResponseWriter, r *http.Request) {
+func DosenUpdateController(w http.ResponseWriter, r *http.Request) {
 	user_id := r.URL.Query().Get("userId")
 	if r.Method != http.MethodPost {
 		config.MessageError503(w, r)
@@ -224,13 +214,13 @@ func UpdateController(w http.ResponseWriter, r *http.Request) {
 	}
 
 	id := r.Form.Get("id")
-	nim := r.Form.Get("nim")
+	nim := r.Form.Get("nip")
 	name := r.Form.Get("name")
-	kelas := r.Form.Get("kelas")
-	semester := r.Form.Get("semester")
-	query.Update(id, nim, name, semester, kelas, user_id)
+	email := r.Form.Get("email")
+	matkul_id := r.Form.Get("matkul_id")
+	query.UpdateDosen(id, nim, name, email, matkul_id, user_id)
 	fmt.Println("success")
-	http.Redirect(w, r, "/mahasiswa", 302)
+	http.Redirect(w, r, "/dosen", 302)
 	w.Write([]byte("<script>alert('Sukses mengubah data')</script>"))
 	return
 }

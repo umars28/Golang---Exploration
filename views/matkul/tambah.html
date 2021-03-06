@@ -6,50 +6,34 @@
         <div class="col-md-12">
           <div class="card">
             <div class="card-header">
-              <h4>Mahasiswa</h4>
+              <h4>Matkul</h4>
             </div>
             <div class="card-body p-0">            
                 <div class="card">
                   <div class="row">
                     <div class="col-md-6">
                       <div class="card-header">
-                        <h4>Tambah Mahasiswa</h4>                     
+                        <h4>Tambah Matkul</h4>                     
                       </div>
                     </div>
                     <div class="col-md-6">
                       <div class="text-right mr-4 mt-5">
-                        <a href="/mahasiswa"><button class="btn btn-danger">Kembali</button></a>
+                        <a href="/matkul"><button class="btn btn-danger">Kembali</button></a>
                       </div>
                     </div>
                   </div>
-                  <form action="/store" method="POST">
+                  <form action="/store-matkul" method="POST">
                     <div class="card-body">
-                      <div class="form-group">
-                        <label>NIM</label>
-                        <input type="text" class="form-control" name="nim" required="">
-                      </div>
                       <div class="form-group">
                         <label>Nama</label>
                         <input type="text" class="form-control" name="name" required="">
                       </div>
                       <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" class="form-control" name="email" required="">
-                      </div>
-                      <div class="form-group">
-                        <label>Semester</label>
-                        <input type="number" class="form-control" name="semester" required="">
-                      </div>
-                      <div class="form-group">
-                        <label for="kelas">Kelas</label>
-                        <select name="kelas_id" class="form-control" id="kelas" required>
-                          {{ range .}}
-                          <option value="{{ .ID }}">{{ .Nama }}</option>
-                          {{ end }}
-                        </select>
+                        <label>Status</label>
+                        <input type="text" class="form-control" name="status" required="">
                       </div>
                     </div>
-                    <div class="card-footer text-right">
+                    <div class="card-footer text-left">
                       <button class="btn btn-primary">Tambah</button>
                     </div>
                   </form>

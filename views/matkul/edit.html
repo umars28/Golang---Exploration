@@ -1,0 +1,51 @@
+{{ template "layout" . }}
+{{ define "main" }}
+<div class="main-content">
+    <section class="section">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h4>Matkul</h4>
+            </div>
+            <div class="card-body p-0">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="card-header">
+                      <h4>Detail Matkul</h4>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="text-right mr-4 mt-4">
+                      <a href="/matkul"><button class="btn btn-danger">Kembali</button></a>
+                    </div>
+                  </div>
+              </div>
+                <div class="card">
+                    {{ range .}}
+                  <form method="POST" action="/update-matkul?id={{ .ID }}">                  
+                    <div class="card-body">
+                      <div class="form-group">
+                        <label>ID</label>
+                        <input type="text" class="form-control" value="{{ .ID }}" name="id" required="" disabled>
+                      </div>
+                      <div class="form-group">
+                        <label>Nama</label>
+                        <input type="text" class="form-control" value="{{ .Nama }}" name="name" required="">
+                      </div>
+                      <div class="form-group">
+                        <label>Status</label>
+                        <input type="text" class="form-control" value="{{ .Status }}" name="status" required="">
+                      </div>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-primary ml-4">Update</button>
+                  </form>
+                  {{ end }}
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+{{ end }}
