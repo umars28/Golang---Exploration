@@ -34,7 +34,6 @@ func GetAllDosen(ctx context.Context) ([]model.Dosen, error) {
 		if err = rowQuery.Scan(&dosen.ID,
 			&dosen.NIP,
 			&dosen.Name,
-			&dosen.Email,
 			&dosen.Matkul_id,
 			&dosen.User_id); err != nil {
 			return nil, err
@@ -62,7 +61,7 @@ func CreateRowDosen(name, nip, email, matkul_id string) {
 	res, error := db.Exec(`INSERT INTO users (nama, email, password, roles) VALUES (?, ?, ?, ?)`, name, email, password, role)
 	id, _ := res.LastInsertId()
 	fmt.Println(id)
-	_, error2 := db.Exec(`INSERT INTO dosen (nip, nama, email, matkul_id, users_id) VALUES (?, ?, ?, ?, ?)`, nip, name, email, matkul_id, id)
+	_, error2 := db.Exec(`INSERT INTO dosen (nip, nama, matkul_id, users_id) VALUES (?, ?, ?, ?)`, nip, name, matkul_id, id)
 	if error != nil || error2 != nil {
 		panic(error.Error())
 	}
@@ -118,7 +117,6 @@ func DetailDosen(ctx context.Context, dosenId int) ([]model.Dosen, error) {
 		if err = rowQuery.Scan(&dosen.ID,
 			&dosen.NIP,
 			&dosen.Name,
-			&dosen.Email,
 			&dosen.Matkul_id,
 			&dosen.User_id); err != nil {
 		}
@@ -158,7 +156,6 @@ func EditDosen(ctx context.Context, dosenId int) ([]model.Dosen, error) {
 		if err = rowQuery.Scan(&dosen.ID,
 			&dosen.NIP,
 			&dosen.Name,
-			&dosen.Email,
 			&dosen.Matkul_id,
 			&dosen.User_id); err != nil {
 		}
@@ -172,7 +169,7 @@ func EditDosen(ctx context.Context, dosenId int) ([]model.Dosen, error) {
 	return dosens, nil
 }
 
-func UpdateDosen(id, nip, name, email, matkul_id, userId string) {
+func UpdateDosen(id, nip, name, matkul_id, userId string) {
 	db, e := config.MySQL()
 
 	if e != nil {
@@ -185,7 +182,7 @@ func UpdateDosen(id, nip, name, email, matkul_id, userId string) {
 	}
 	password, _ := HashPassword(nip)
 	user, _ := strconv.Atoi(userId)
-	_, error := db.Query(`UPDATE dosen SET nip = ?, nama = ?, email = ?, matkul_id = ?, kelas_id = ? where id = ?`, nip, name, email, matkul_id, id)
+	_, error := db.Query(`UPDATE dosen SET nip = ?, nama = ?, matkul_id = ?, users_id = ? where id = ?`, nip, name, matkul_id, user, id)
 	_, error2 := db.Query(`UPDATE users SET nama = ?, password = ? where id = ?`, name, password, user)
 	if error != nil || error2 != nil {
 		panic(error.Error())

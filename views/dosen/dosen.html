@@ -18,7 +18,6 @@
                     <th>ID</th>
                     <th>NIP</th>
                     <th>Name</th>
-                    <th>Email</th>
                     <th>Matkul</th>
                     <th>Aksi</th>
                   </tr>
@@ -26,8 +25,7 @@
                   <tr>
                     <td><a href="#">{{ .ID }}</a></td>
                     <td class="font-weight-600"><a href="/detail-dosen?id={{ .ID }}">{{ .NIP }}</a></td>
-                    <td><div class="badge badge-warning">{{ .Nama }}</div></td>
-                    <td>{{ .Email }}</td>
+                    <td><div class="badge badge-warning">{{ .Name }}</div></td>
                     <td>{{ .Matkul_id }}</td>                  
                     <td>
                       <a href="/edit-dosen?id={{ .ID }}" class="btn btn-primary btn-sm mb-2">Edit</a>

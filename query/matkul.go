@@ -129,7 +129,7 @@ func MatkulUpdate(id, name, status string) {
 	if eb != nil {
 		panic(eb.Error())
 	}
-	_, error := db.Query(`UPDATE matkul SET nama = ?, status = ? where id = ?`, name, status, id)
+	_, error := db.Query(`UPDATE matkul SET name = ?, status = ? where id = ?`, name, status, id)
 	if error != nil {
 		panic(error.Error())
 	}

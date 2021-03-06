@@ -122,7 +122,7 @@ func MatkulEditController(w http.ResponseWriter, r *http.Request) {
 		ctx, cancel := context.WithCancel(context.Background())
 
 		defer cancel()
-		matkul, err := query.KelasEdit(ctx, matkulId)
+		matkul, err := query.MatkulEdit(ctx, matkulId)
 		template, err := template.ParseFiles(
 			path.Join("views/matkul", "edit.html"),
 			path.Join("views/template", "main.html"),
