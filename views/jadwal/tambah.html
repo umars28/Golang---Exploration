@@ -1,0 +1,67 @@
+{{ template "layout" . }}
+{{ define "main" }}
+<div class="main-content">
+    <section class="section">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h4>Jadwal Mata Kuliah</h4>
+            </div>
+            <div class="card-body p-0">            
+                <div class="card">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="card-header">
+                        <h4>Tambah Jadwal Mata Kuliah</h4>                     
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="text-right mr-4 mt-5">
+                        <a href="/jadwal"><button class="btn btn-danger">Kembali</button></a>
+                      </div>
+                    </div>
+                  </div>
+                  <form action="/store-jadwal" method="POST">
+                    <div class="card-body">
+                      <div class="form-group">
+                        <label for="hari">Hari</label>
+                        <select name="hari_id" class="form-control" id="hari" required>
+                          {{ range .hari}}
+                          <option value="{{ .ID }}">{{ .kelas }}</option>
+                          {{ end }}
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label>Nama</label>
+                        <input type="text" class="form-control" name="name" required="">
+                      </div>
+                      <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-control" name="email" required="">
+                      </div>
+                      <div class="form-group">
+                        <label>Semester</label>
+                        <input type="number" class="form-control" name="semester" required="">
+                      </div>
+                      <div class="form-group">
+                        <label for="kelas">Kelas</label>
+                        <select name="kelas_id" class="form-control" id="kelas" required>
+                          {{ range .kelas}}
+                          <option value="">dsds</option>
+                          {{ end }}
+                        </select>
+                      </div>
+                    </div>
+                    <div class="card-footer text-right">
+                      <button class="btn btn-primary">Tambah</button>
+                    </div>
+                  </form>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+{{ end }}

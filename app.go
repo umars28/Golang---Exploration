@@ -62,6 +62,16 @@ func main() {
 	mux.Handle("/delete-matkul", middleware.Auth(http.HandlerFunc(controller.MatkulDeleteController)))
 	// End Kelas
 
+	// Mahasiswa
+	mux.Handle("/jadwal", middleware.Auth(http.HandlerFunc(controller.JadwalController)))
+	mux.Handle("/tambah-jadwal", middleware.Auth(http.HandlerFunc(controller.TambahJadwalController)))
+	mux.Handle("/store-jadwal", middleware.Auth(http.HandlerFunc(controller.StoreJadwalController)))
+	// mux.Handle("/delete", middleware.Auth(http.HandlerFunc(controller.DeleteController)))
+	// mux.Handle("/detail", middleware.Auth(http.HandlerFunc(controller.DetailController)))
+	// mux.Handle("/edit", middleware.Auth(http.HandlerFunc(controller.EditController)))
+	// mux.Handle("/update", middleware.Auth(http.HandlerFunc(controller.UpdateController)))
+	// End Mahasiswa
+
 	fileServerCss := http.FileServer(http.Dir("assets/admin/css"))
 	fileServerCssPlugins := http.FileServer(http.Dir("assets/admin/plugins/css"))
 	fileServerJs := http.FileServer(http.Dir("assets/admin/js"))

@@ -1,0 +1,46 @@
+{{ template "layout" . }}
+{{ define "main" }}
+<div class="main-content">
+    <section class="section">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h4>Jadwal</h4>
+              <div class="card-header-action">
+                <a href="/tambah-jadwal" class="btn btn-danger">Tambah <i class="fas fa-chevron-right"></i></a>
+              </div>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive table-invoice">
+                <table class="table table-striped">
+                  <tr>
+                    <th>ID</th>
+                    <th>Hari</th>
+                    <th>Matkul</th>
+                    <th>Kelas</th>
+                    <th>Dosen</th>
+                    <th>Aksi</th>
+                  </tr>
+                  {{ range .}}
+                  <tr>
+                    <td><a href="#">{{ .ID }}</a></td>
+                    <td class="font-weight-600">{{ .Hari_id }}</td>
+                    <td><div class="badge badge-warning">{{ .Matkul_id }}</div></td>
+                    <td>{{ .Kelas_id }}</td>
+                    <td>{{ .Dosen_id }}</td>                  
+                    <td>
+                      <a href="/edit-jadwal?id={{ .ID }}" class="btn btn-primary btn-sm mb-2">Edit</a>
+                      <a href="/delete-jadwal?id={{ .ID }}" class="btn btn-primary btn-sm mb-2">Hapus</a>
+                    </td>
+                  </tr>
+                  {{ end }}
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+{{ end }}

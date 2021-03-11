@@ -1,0 +1,54 @@
+{{ template "layout" . }}
+{{ define "main" }}
+<div class="main-content">
+    <section class="section">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-header">
+              <h4>Mahasiswa</h4>
+            </div>
+            <div class="card-body p-0">
+                <div class="card">
+                  <form>
+                    {{ range .}}
+                    <div class="card-header">
+                      <h4>Detail Mahasiswa</h4>
+                    </div>
+                    <div class="card-body">
+                      <div class="form-group">
+                        <label>ID</label>
+                        <input type="text" class="form-control" value="{{ .ID }}" name="id" required="" disabled>
+                      </div>
+                      <div class="form-group">
+                        <label>NIM</label>
+                        <input type="text" class="form-control" value="{{ .NIM }}" name="nim" required="" disabled>
+                      </div>
+                      <div class="form-group">
+                        <label>Nama</label>
+                        <input type="text" class="form-control" value="{{ .Name }}" name="nama" required="" disabled>
+                      </div>
+                      <div class="form-group">
+                        <label>Semester</label>
+                        <input type="number" class="form-control" value="{{ .Semester }}" name="semester" required="" disabled>
+                      </div>
+                      <div class="form-group">
+                        <label>Kelas</label>
+                        <input type="number" class="form-control" value="{{ .Kelas_id }}" name="kelas" required="" disabled>
+                      </div>
+                    </div>
+                    {{ end }}
+                  </form>
+                  <div class="">
+                    <div class="text-left ml-4 mt-0">
+                      <a href="/mahasiswa"><button class="btn btn-danger">Kembali</button></a>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+{{ end }}
