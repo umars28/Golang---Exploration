@@ -115,7 +115,7 @@ func LoginProses(w http.ResponseWriter, r *http.Request) {
 			session.Values["authenticated"] = true
 			session.Save(r, w)
 			fmt.Println("login berhasil")
-			http.Redirect(w, r, "/mahasiswa", 302)
+			http.Redirect(w, r, "/dashboard?email="+email, 302)
 		} else {
 			fmt.Println("login gagal")
 			http.Redirect(w, r, "/login", 302)
